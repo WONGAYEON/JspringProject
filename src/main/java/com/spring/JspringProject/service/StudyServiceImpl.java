@@ -1,10 +1,18 @@
 package com.spring.JspringProject.service;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.JspringProject.dao.StudyDao;
 
@@ -125,5 +133,39 @@ public class StudyServiceImpl implements StudyService {
 		
 		return vos;
 	}
+
+	@Override
+	public int fileUpload(MultipartFile fName, String mid) {
+		int res = 0;
+		
+		// 파일이름 중복처리(UUID)후 서버에 저장처리
+		UUID uid = UUID.randomUUID();
+		String oFileName = fName.getOriginalFilename();  // 업로드한 파일명을 출력
+		String sFileName = mid + "_" + uid.toString().substring(0,8) + "_" + oFileName;
+		
+		try {
+			writeFile(fName, sFileName);
+			res = 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	private void writeFile(MultipartFile fName, String sFileName) throws IOException {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");
+		
+		FileOutputStream fos = new FileOutputStream(realPath + sFileName);
+		
+		if(fName.getBytes().length != -1) {
+			fos.write(fName.getBytes());
+		}
+		fos.flush();
+		fos.close();
+	}
+
+	
+	
 	
 }

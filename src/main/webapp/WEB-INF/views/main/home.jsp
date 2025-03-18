@@ -118,7 +118,7 @@
       <div class="w3-col m6 w3-large w3-margin-bottom">
         <i class="fa fa-map-marker" style="width:30px"></i> Green Computer, Kr<br>
         <i class="fa fa-phone" style="width:30px"></i> Phone: +00 151515<br>
-        <i class="fa fa-envelope" style="width:30px"> </i> Email: cjsk1126@naver.com<br>
+        <i class="fa fa-envelope" style="width:30px"> </i> Email: dnjsrkdus0403@naver.com<br>
       </div>
       <div class="w3-col m6">
         <form action="/action_page.php" target="_blank">
