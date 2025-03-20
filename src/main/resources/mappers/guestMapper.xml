@@ -10,6 +10,10 @@
 	<select id="getTotRecCnt" resultType="int">
 	  select count(*) from guest;
 	</select>
+	
+	<select id="getGuestCnt" resultType="int">
+	  select count(*) from guest where name like concat('%',#{name},'%') or name like concat('%',#{nickName},'%');
+	</select>
 
 
 

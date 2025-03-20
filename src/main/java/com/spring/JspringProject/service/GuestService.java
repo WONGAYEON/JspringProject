@@ -14,4 +14,6 @@ public interface GuestService {
 
 	int getTotRecCnt();
 
+	int getGuestCnt(String name, String nickName);
+
 }

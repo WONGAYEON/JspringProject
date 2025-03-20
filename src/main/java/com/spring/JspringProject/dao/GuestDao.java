@@ -16,4 +16,6 @@ public interface GuestDao {
 
 	int getTotRecCnt();
 
+	int getGuestCnt(@Param("name") String name, @Param("nickName") String nickName);
+
 }

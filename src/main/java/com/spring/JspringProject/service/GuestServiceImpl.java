@@ -33,5 +33,10 @@ public class GuestServiceImpl implements GuestService {
 	public int getTotRecCnt() {
 		return guestDao.getTotRecCnt();
 	}
+
+	@Override
+	public int getGuestCnt(String name, String nickName) {
+		return guestDao.getGuestCnt(name, nickName);
+	}
 	
 }
