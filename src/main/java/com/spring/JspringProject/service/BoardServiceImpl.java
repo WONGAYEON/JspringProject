@@ -15,6 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.spring.JspringProject.dao.BoardDao;
+import com.spring.JspringProject.vo.BoardReplyVo;
 import com.spring.JspringProject.vo.BoardVo;
 
 @Service
@@ -29,8 +30,8 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<BoardVo> getBoardList(int startIndexNo, int pageSize) {
-		return boardDao.getBoardList(startIndexNo, pageSize);
+	public List<BoardVo> getBoardList(int startIndexNo, int pageSize, String search, String searchString) {
+		return boardDao.getBoardList(startIndexNo, pageSize, search, searchString);
 	}
 
 	@Override
@@ -56,12 +57,12 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public void imgCheck(String content) {
-		//      0               1                2              3               4               5
+		//      0         1         2         3         4         4
 		//      01234567890123456789012345678901234567890123456789012345678
 		// <img src="/JspringProject/data/ckeditor/250321140356_2503.jpg" style="height:854px; width:1280px" />
 		
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-		String realPath = request.getSession().getServletContext().getRealPath("resources/data/");
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/");
 		
 		int position = 35;
 		String nextImg = content.substring(content.indexOf("src=\"/") + position);
@@ -82,34 +83,33 @@ public class BoardServiceImpl implements BoardService {
 
 	// 파일 복사처리
 	private void fileCopyCheck(String origFilePath, String copyFilePath) {
-		
-			try {
-					FileInputStream fis =	new FileInputStream(new File(origFilePath));
-					FileOutputStream fos =	new FileOutputStream(new File(copyFilePath));
-		
-						byte[] b = new byte[2048];
-						int cnt = 0;
-						while((cnt = fis.read(b)) != -1) {
-								fos.write(b, 0, cnt);
-						}
-								fos.flush();
-								fos.close();
-								fis.close();
-				} catch (FileNotFoundException e) {
-						e.printStackTrace();
-				} catch (IOException e) {
-							e.printStackTrace();
-				}
+		try {
+			FileInputStream fis = new FileInputStream(new File(origFilePath));
+			FileOutputStream fos = new FileOutputStream(new File(copyFilePath));
+			
+			byte[] b = new byte[2048];
+			int cnt = 0;
+			while((cnt = fis.read(b)) != -1) {
+				fos.write(b, 0, cnt);
+			}
+			fos.flush();
+			fos.close();
+			fis.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void imgDelete(String content) {
-		//      0               1               2               3               4               5
+		//      0         1         2         3         4         4
 		//      01234567890123456789012345678901234567890123456789012345678
 		// <img src="/JspringProject/data/board/250321140356_2503.jpg" style="height:854px; width:1280px" />
 		
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-		String realPath = request.getSession().getServletContext().getRealPath("resources/data/");
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/");
 		
 		int position = 32;
 		String nextImg = content.substring(content.indexOf("src=\"/") + position);
@@ -120,7 +120,7 @@ public class BoardServiceImpl implements BoardService {
 			
 			String origFilePath = realPath + "board/" + imgFile;
 			
-			fileDeleteCheck(origFilePath);
+			fileDelete(origFilePath);
 			
 			if(nextImg.indexOf("src=\"/") == -1) sw = false;
 			else nextImg = nextImg.substring(nextImg.indexOf("src=\"/") + position);
@@ -128,20 +128,20 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	// 파일 삭제처리
-	private void fileDeleteCheck(String origFilePath) {
+	private void fileDelete(String origFilePath) {
 		File delFile = new File(origFilePath);
 		if(delFile.exists()) delFile.delete();
 	}
 
 	@Override
 	public void imgBackup(String content) {
-		//      0               1               2               3               4               5
+		//      0         1         2         3         4         4
 		//      01234567890123456789012345678901234567890123456789012345678
 		// <img src="/JspringProject/data/board/250321140356_2503.jpg" style="height:854px; width:1280px" />
 		// <img src="/JspringProject/data/ckeditor/250321140356_2503.jpg" style="height:854px; width:1280px" />
 		
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-		String realPath = request.getSession().getServletContext().getRealPath("resources/data/");
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/");
 		
 		int position = 32;
 		String nextImg = content.substring(content.indexOf("src=\"/") + position);
@@ -164,6 +164,42 @@ public class BoardServiceImpl implements BoardService {
 	public int setBoardUpdate(BoardVo vo) {
 		return boardDao.setBoardUpdate(vo);
 	}
+
+	@Override
+	public int setBoardGoodCheck1(int idx) {
+		return boardDao.setBoardGoodCheck1(idx);
+	}
+
+	@Override
+	public int setBoardGoodCheck2(int idx, int goodCnt) {
+		return boardDao.setBoardGoodCheck2(idx, goodCnt);
+	}
+
+	@Override
+	public BoardVo getPreNextSearch(int idx, String preNext) {
+		return boardDao.getPreNextSearch(idx, preNext);
+	}
+
+	@Override
+	public List<BoardReplyVo> getBoardReply(int idx) {
+		return boardDao.getBoardReply(idx);
+	}
+
+	@Override
+	public int setBoardReplyInput(BoardReplyVo vo) {
+		return boardDao.setBoardReplyInput(vo);
+	}
+
+	@Override
+	public int setBoardReplyDelete(int idx) {
+		return boardDao.setBoardReplyDelete(idx);
+	}
+
+	@Override
+	public int setBoardReplyUpdateCheckOk(BoardReplyVo vo) {
+		return boardDao.setBoardReplyUpdateCheckOk(vo);
+	}
+
 	
 }
 

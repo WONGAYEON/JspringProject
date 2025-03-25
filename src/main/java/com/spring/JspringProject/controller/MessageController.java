@@ -16,7 +16,11 @@ public class MessageController {
 	public String getMessage(Model model, @PathVariable String msgFlag,
 			HttpSession session,
 			@RequestParam(name="mid", defaultValue = "", required = false) String mid,
-			@RequestParam(name="idx", defaultValue = "0", required = false) int idx
+			@RequestParam(name="idx", defaultValue = "0", required = false) int idx,
+			@RequestParam(name="pag", defaultValue = "1", required = false) int pag,
+			@RequestParam(name="pageSize", defaultValue = "10", required = false) int pageSize,
+			@RequestParam(name="search", defaultValue = "", required = false) String search,
+			@RequestParam(name="searchString", defaultValue = "", required = false) String searchString
 		) {
 		
 		if(msgFlag.equals("userInputOk")) {
@@ -24,7 +28,7 @@ public class MessageController {
 			model.addAttribute("url", "user/userMain");
 		}
 		else if(msgFlag.equals("userInputNo")) {
-			model.addAttribute("message", "회원에 가입실패~~");
+			model.addAttribute("message", "회원 가입실패");
 			model.addAttribute("url", "user/userInput");
 		}
 		else if(msgFlag.equals("user2InputOk")) {
@@ -32,7 +36,7 @@ public class MessageController {
 			model.addAttribute("url", "user2/userMain");
 		}
 		else if(msgFlag.equals("user2InputNo")) {
-			model.addAttribute("message", "회원에 가입실패~~");
+			model.addAttribute("message", "회원 가입실패");
 			model.addAttribute("url", "user2/userInput");
 		}
 		else if(msgFlag.equals("userIdDuplication")) {
@@ -56,7 +60,7 @@ public class MessageController {
 			model.addAttribute("url", "user/userList");
 		}
 		else if(msgFlag.equals("userDeleteNo")) {
-			model.addAttribute("message", "회원삭제 실패");
+			model.addAttribute("message", "회원 삭제 실패");
 			model.addAttribute("url", "user/userList");
 		}
 		else if(msgFlag.equals("user2DeleteOk")) {
@@ -64,7 +68,7 @@ public class MessageController {
 			model.addAttribute("url", "user2/userList");
 		}
 		else if(msgFlag.equals("user2DeleteNo")) {
-			model.addAttribute("message", "회원삭제 실패");
+			model.addAttribute("message", "회원 삭제 실패");
 			model.addAttribute("url", "user2/userList");
 		}
 		else if(msgFlag.equals("userUpdateOk")) {
@@ -72,7 +76,7 @@ public class MessageController {
 			model.addAttribute("url", "user/userList");
 		}
 		else if(msgFlag.equals("userUpdateNo")) {
-			model.addAttribute("message", "회원정보 수정 실패~~");
+			model.addAttribute("message", "회원정보 수정 실패");
 			model.addAttribute("url", "user/userList");
 		}
 		else if(msgFlag.equals("user2UpdateOk")) {
@@ -92,7 +96,7 @@ public class MessageController {
 			model.addAttribute("url", "guest/guestInput");
 		}
 		else if(msgFlag.equals("adminOk")) {
-			model.addAttribute("message", "관리자 로그인 성공!!");
+			model.addAttribute("message", "관리자 로그인 성공");
 			model.addAttribute("url", "guest/guestList");
 		}
 		else if(msgFlag.equals("adminNo")) {
@@ -100,7 +104,7 @@ public class MessageController {
 			model.addAttribute("url", "guest/admin");
 		}
 		else if(msgFlag.equals("adminLogout")) {
-			model.addAttribute("message", "관리자 로그아웃 성공!!");
+			model.addAttribute("message", "관리자 로그아웃 성공");
 			model.addAttribute("url", "guest/guestList");
 		}
 		else if(msgFlag.equals("guestDeleteOk")) {
@@ -132,7 +136,7 @@ public class MessageController {
 			model.addAttribute("url", "member/memberLogin");
 		}
 		else if(msgFlag.equals("memberJoinNo")) {
-			model.addAttribute("message", "회원 가입실패~~\\n다시 회원가입 해주세요");
+			model.addAttribute("message", "회원 가입실패\\n다시 회원가입 해주세요");
 			model.addAttribute("url", "member/memberJoin");
 		}
 		else if(msgFlag.equals("memberLoginOk")) {
@@ -140,7 +144,7 @@ public class MessageController {
 			model.addAttribute("url", "member/memberMain");
 		}
 		else if(msgFlag.equals("memberLoginNo")) {
-			model.addAttribute("message", "로그인 실패~ 다시 로그인해 주세요.");
+			model.addAttribute("message", "로그인 실패 다시 로그인해 주세요.");
 			model.addAttribute("url", "member/memberLogin");
 		}
 		else if(msgFlag.equals("memberLogoutOk")) {
@@ -194,7 +198,7 @@ public class MessageController {
 			model.addAttribute("url", "board/boardInput");
 		}
 		else if(msgFlag.equals("boardDeleteOk")) {
-			model.addAttribute("message", "게시글 삭제 성공");
+			model.addAttribute("message", "게시글을 삭제 하였습니다.");
 			model.addAttribute("url", "board/boardList");
 		}
 		else if(msgFlag.equals("boardDeleteNo")) {
@@ -203,11 +207,11 @@ public class MessageController {
 		}
 		else if(msgFlag.equals("boardUpdateOk")) {
 			model.addAttribute("message", "게시글이 수정 되었습니다.");
-			model.addAttribute("url", "board/boardList");
+			model.addAttribute("url", "board/boardList?pag="+pag+"&pageSize="+pageSize+"&search="+search+"&searchString="+searchString);
 		}
 		else if(msgFlag.equals("boardUpdateNo")) {
-			model.addAttribute("message", "게시글 수정 실패.");
-			model.addAttribute("url", "board/boardContent?idx="+idx);
+			model.addAttribute("message", "게시글 수정 실패");
+			model.addAttribute("url", "board/boardContent?idx="+idx+"&pag="+pag+"&pageSize="+pageSize+"&search="+search+"&searchString="+searchString);
 		}
 		
 		return "include/message";

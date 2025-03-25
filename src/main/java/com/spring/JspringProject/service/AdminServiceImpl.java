@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.JspringProject.dao.AdminDao;
+import com.spring.JspringProject.vo.ComplaintVo;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -19,6 +20,16 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public int getMemberTotRecCnt(int level) {
 		return adminDao.getMemberTotRecCnt(level);
+	}
+
+	@Override
+	public int setBoardComplaintInput(ComplaintVo vo) {
+		return adminDao.setBoardComplaintInput(vo);
+	}
+
+	@Override
+	public int setBoardTableComplaintOk(int partIdx) {
+		return adminDao.setBoardTableComplaintOk(partIdx);
 	}
 	
 }
