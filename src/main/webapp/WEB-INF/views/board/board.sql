@@ -11,7 +11,7 @@ create table board (
   readNum int default 0,							/* 글 조회수 */
   wDate		datetime default now(),			/* 글쓴 날짜 */
   good		int default 0,							/* '좋아요' 클릭횟수 누적 */
-  complaint char(2) default 'NO',			/* 신고글 유무(신고당한글:OK, 정상글:NO) */
+  complaint char(2) default 'NO',			/* 신고글 유무(신고당한글:OK, 정상글:NO, 감춘글:HI(hidden)) */
   primary key (idx),
   foreign key (mid) references member(mid)
 );
@@ -47,6 +47,6 @@ create table boardReply (
 );
 desc boardReply;
 
-insert into boardReply values (default,10,'admin','관리자','댓글 연습중..','192.168.50.1',default);
+insert into boardReply values (default,45,'admin','관리맨','댓글 연습중..','192.168.50.1',default);
 
 select * from boardReply;

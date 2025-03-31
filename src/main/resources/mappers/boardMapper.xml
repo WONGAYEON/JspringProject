@@ -21,7 +21,7 @@
   	select * from board where idx = #{idx};
   </select>
   
-  <!-- <![CDATA[조건식]]> -->
+  <!-- <![CDATA[조건식..]]> -->
   <select id="getPreNextSearch" resultType="com.spring.JspringProject.vo.BoardVo">
   	select idx,title from board where
 	  	<if test='preNext == "pre"'> <![CDATA[idx < #{idx}]]> </if> 

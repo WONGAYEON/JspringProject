@@ -20,7 +20,8 @@ public class MessageController {
 			@RequestParam(name="pag", defaultValue = "1", required = false) int pag,
 			@RequestParam(name="pageSize", defaultValue = "10", required = false) int pageSize,
 			@RequestParam(name="search", defaultValue = "", required = false) String search,
-			@RequestParam(name="searchString", defaultValue = "", required = false) String searchString
+			@RequestParam(name="searchString", defaultValue = "", required = false) String searchString,
+			@RequestParam(name="part", defaultValue = "전체", required = false) String part
 		) {
 		
 		if(msgFlag.equals("userInputOk")) {
@@ -28,7 +29,7 @@ public class MessageController {
 			model.addAttribute("url", "user/userMain");
 		}
 		else if(msgFlag.equals("userInputNo")) {
-			model.addAttribute("message", "회원 가입실패");
+			model.addAttribute("message", "회원에 가입실패~~");
 			model.addAttribute("url", "user/userInput");
 		}
 		else if(msgFlag.equals("user2InputOk")) {
@@ -36,7 +37,7 @@ public class MessageController {
 			model.addAttribute("url", "user2/userMain");
 		}
 		else if(msgFlag.equals("user2InputNo")) {
-			model.addAttribute("message", "회원 가입실패");
+			model.addAttribute("message", "회원에 가입실패~~");
 			model.addAttribute("url", "user2/userInput");
 		}
 		else if(msgFlag.equals("userIdDuplication")) {
@@ -60,7 +61,7 @@ public class MessageController {
 			model.addAttribute("url", "user/userList");
 		}
 		else if(msgFlag.equals("userDeleteNo")) {
-			model.addAttribute("message", "회원 삭제 실패");
+			model.addAttribute("message", "회원삭제 실패");
 			model.addAttribute("url", "user/userList");
 		}
 		else if(msgFlag.equals("user2DeleteOk")) {
@@ -68,7 +69,7 @@ public class MessageController {
 			model.addAttribute("url", "user2/userList");
 		}
 		else if(msgFlag.equals("user2DeleteNo")) {
-			model.addAttribute("message", "회원 삭제 실패");
+			model.addAttribute("message", "회원삭제 실패");
 			model.addAttribute("url", "user2/userList");
 		}
 		else if(msgFlag.equals("userUpdateOk")) {
@@ -76,7 +77,7 @@ public class MessageController {
 			model.addAttribute("url", "user/userList");
 		}
 		else if(msgFlag.equals("userUpdateNo")) {
-			model.addAttribute("message", "회원정보 수정 실패");
+			model.addAttribute("message", "회원정보 수정 실패~~");
 			model.addAttribute("url", "user/userList");
 		}
 		else if(msgFlag.equals("user2UpdateOk")) {
@@ -84,7 +85,7 @@ public class MessageController {
 			model.addAttribute("url", "user2/userList");
 		}
 		else if(msgFlag.equals("user2UpdateNo")) {
-			model.addAttribute("message", "회원정보 수정 실패");
+			model.addAttribute("message", "회원정보 수정 실패~~");
 			model.addAttribute("url", "user/userList");
 		}
 		else if(msgFlag.equals("guestInputOk")) {
@@ -92,19 +93,19 @@ public class MessageController {
 			model.addAttribute("url", "guest/guestList");
 		}
 		else if(msgFlag.equals("guestInputNo")) {
-			model.addAttribute("message", "방명록 글 등록 실패");
+			model.addAttribute("message", "방명록에 글이 등록 실패~~");
 			model.addAttribute("url", "guest/guestInput");
 		}
 		else if(msgFlag.equals("adminOk")) {
-			model.addAttribute("message", "관리자 로그인 성공");
+			model.addAttribute("message", "관리자 로그인 성공!!");
 			model.addAttribute("url", "guest/guestList");
 		}
 		else if(msgFlag.equals("adminNo")) {
-			model.addAttribute("message", "관리자 로그인 실패");
+			model.addAttribute("message", "관리자 로그인 실패~~");
 			model.addAttribute("url", "guest/admin");
 		}
 		else if(msgFlag.equals("adminLogout")) {
-			model.addAttribute("message", "관리자 로그아웃 성공");
+			model.addAttribute("message", "관리자 로그아웃 성공!!");
 			model.addAttribute("url", "guest/guestList");
 		}
 		else if(msgFlag.equals("guestDeleteOk")) {
@@ -112,7 +113,7 @@ public class MessageController {
 			model.addAttribute("url", "guest/guestList");
 		}
 		else if(msgFlag.equals("guestDeleteNo")) {
-			model.addAttribute("message", "게시글 삭제 실패");
+			model.addAttribute("message", "게시글이 삭제 실패~~");
 			model.addAttribute("url", "guest/guestList");
 		}
 		else if(msgFlag.equals("fileUploadOk")) {
@@ -120,7 +121,7 @@ public class MessageController {
 			model.addAttribute("url", "study/fileUpload/fileUpload");
 		}
 		else if(msgFlag.equals("fileUploadNo")) {
-			model.addAttribute("message", "파일 업로드 실패");
+			model.addAttribute("message", "파일이 업로드 실패~~");
 			model.addAttribute("url", "study/fileUpload/fileUpload");
 		}
 		else if(msgFlag.equals("mailSendOk")) {
@@ -136,7 +137,7 @@ public class MessageController {
 			model.addAttribute("url", "member/memberLogin");
 		}
 		else if(msgFlag.equals("memberJoinNo")) {
-			model.addAttribute("message", "회원 가입실패\\n다시 회원가입 해주세요");
+			model.addAttribute("message", "회원 가입실패~~\\n다시 회원가입 해주세요");
 			model.addAttribute("url", "member/memberJoin");
 		}
 		else if(msgFlag.equals("memberLoginOk")) {
@@ -144,7 +145,7 @@ public class MessageController {
 			model.addAttribute("url", "member/memberMain");
 		}
 		else if(msgFlag.equals("memberLoginNo")) {
-			model.addAttribute("message", "로그인 실패 다시 로그인해 주세요.");
+			model.addAttribute("message", "로그인 실패~ 다시 로그인해 주세요.");
 			model.addAttribute("url", "member/memberLogin");
 		}
 		else if(msgFlag.equals("memberLogoutOk")) {
@@ -174,7 +175,7 @@ public class MessageController {
 			model.addAttribute("url", "member/memberLogin");
 		}
 		else if(msgFlag.equals("pwdChangeNo")) {
-			model.addAttribute("message", "회원 비밀번호 변경 실패");
+			model.addAttribute("message", "회원 비밀번호를 변경 실패~~");
 			model.addAttribute("url", "member/pwdCheck/p");
 		}
 		else if(msgFlag.equals("nickCheckNo")) {
@@ -186,7 +187,7 @@ public class MessageController {
 			model.addAttribute("url", "member/memberMain");
 		}
 		else if(msgFlag.equals("memberUpdateNo")) {
-			model.addAttribute("message", "회원 정보 수정실패");
+			model.addAttribute("message", "회원 정보 수정실패~~");
 			model.addAttribute("url", "member/memberUpdate");
 		}
 		else if(msgFlag.equals("boardInputOk")) {
@@ -194,7 +195,7 @@ public class MessageController {
 			model.addAttribute("url", "board/boardList");
 		}
 		else if(msgFlag.equals("boardInputNo")) {
-			model.addAttribute("message", "게시글 등록실패");
+			model.addAttribute("message", "게시글 등록실패~~");
 			model.addAttribute("url", "board/boardInput");
 		}
 		else if(msgFlag.equals("boardDeleteOk")) {
@@ -202,7 +203,7 @@ public class MessageController {
 			model.addAttribute("url", "board/boardList");
 		}
 		else if(msgFlag.equals("boardDeleteNo")) {
-			model.addAttribute("message", "게시글 삭제 실패");
+			model.addAttribute("message", "게시글 삭제 실패~~");
 			model.addAttribute("url", "board/boardContent?idx="+idx);
 		}
 		else if(msgFlag.equals("boardUpdateOk")) {
@@ -210,8 +211,32 @@ public class MessageController {
 			model.addAttribute("url", "board/boardList?pag="+pag+"&pageSize="+pageSize+"&search="+search+"&searchString="+searchString);
 		}
 		else if(msgFlag.equals("boardUpdateNo")) {
-			model.addAttribute("message", "게시글 수정 실패");
+			model.addAttribute("message", "게시글 수정 실패~~");
 			model.addAttribute("url", "board/boardContent?idx="+idx+"&pag="+pag+"&pageSize="+pageSize+"&search="+search+"&searchString="+searchString);
+		}
+		else if(msgFlag.equals("loginError")) {
+			model.addAttribute("message", "로그인후 사용하세요.");
+			model.addAttribute("url", "member/memberLogin");
+		}
+		else if(msgFlag.equals("levelError")) {
+			model.addAttribute("message", "등급을 확인하세요.");
+			model.addAttribute("url", "member/memberMain");
+		}
+		else if(msgFlag.equals("multiFileUploadOk")) {
+			model.addAttribute("message", "멀티파일 업로드 성공!!!");
+			model.addAttribute("url", "study/fileUpload/multiFile");
+		}
+		else if(msgFlag.equals("multiFileUploadNo")) {
+			model.addAttribute("message", "멀티파일 업로드 실패~~");
+			model.addAttribute("url", "study/fileUpload/multiFile");
+		}
+		else if(msgFlag.equals("pdsInputOk")) {
+			model.addAttribute("message", "자료실에 자료가 업로드 되었습니다.");
+			model.addAttribute("url", "pds/pdsList?part="+part);
+		}
+		else if(msgFlag.equals("pdsInputNo")) {
+			model.addAttribute("message", "자료실에 자료가 업로드 실패~~");
+			model.addAttribute("url", "pds/pdsInput?part="+part);
 		}
 		
 		return "include/message";

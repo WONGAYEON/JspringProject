@@ -3,6 +3,7 @@ package com.spring.JspringProject.service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.spring.JspringProject.common.ProjectProvide;
 import com.spring.JspringProject.dao.StudyDao;
 
 @Service
@@ -21,6 +24,9 @@ public class StudyServiceImpl implements StudyService {
 
 	@Autowired
 	private StudyDao studyDao;
+	
+	@Autowired
+	private ProjectProvide projectProvide;
 
 	@Override
 	public String[] getCityStringArray(String dodo) {
@@ -152,6 +158,7 @@ public class StudyServiceImpl implements StudyService {
 		return res;
 	}
 
+	// 전송된 파일을 서버로 저장처리
 	private void writeFile(MultipartFile fName, String sFileName) throws IOException {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");
@@ -163,6 +170,114 @@ public class StudyServiceImpl implements StudyService {
 		}
 		fos.flush();
 		fos.close();
+	}
+
+	@Override
+	public int multiFileUpload(MultipartHttpServletRequest mFile) {
+		int res = 0;
+		
+		try {
+			List<MultipartFile> fileList = mFile.getFiles("fName");
+			String oFileNames = "";
+			String sFileNames = "";
+			int fileSizes = 0;
+			
+			for(MultipartFile file : fileList) {
+				String oFileName = file.getOriginalFilename();
+				String sFileName = projectProvide.saveFileName(oFileName);
+				projectProvide.writeFile(file, sFileName, "fileUpload");
+				
+				oFileNames += oFileName + "/";
+				sFileNames += sFileName + "/";
+				fileSizes += file.getSize();
+			}
+			oFileNames = oFileNames.substring(0, oFileNames.length()-1);
+			sFileNames = sFileNames.substring(0, sFileNames.length()-1);
+			
+			System.out.println("원본파일 : " + oFileNames);
+			System.out.println("저장파일 : " + sFileNames);
+			System.out.println("총사이즈 : " + fileSizes);
+			
+			res = 1;
+		} catch (IOException e) { e.printStackTrace(); }
+		
+		return res;
+	}
+
+	@Override
+	public void getCalendar() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+		
+		// 오늘날짜(년/월/일)를 위한 변수 설정
+		Calendar calToday = Calendar.getInstance();
+		int toYear = calToday.get(Calendar.YEAR);
+		int toMonth = calToday.get(Calendar.MONTH);
+		int toDay = calToday.get(Calendar.DATE);
+		
+		// 화면에 보여주는 달력(년/월)
+		Calendar calView = Calendar.getInstance();
+		int yy = request.getParameter("yy")==null ? calToday.get(Calendar.YEAR) : Integer.parseInt(request.getParameter("yy"));
+		int mm = request.getParameter("mm")==null ? calToday.get(Calendar.MONTH) : Integer.parseInt(request.getParameter("mm"));
+		
+		System.out.println("yy : " + yy + ", mm : " + mm);
+		
+		if(mm < 0) {
+			mm = 11;
+			yy--;
+		}
+		else if(mm > 11) {
+			mm = 0;
+			yy++;
+		}
+		calView.set(yy, mm, 1);
+		
+		int startWeek = calView.get(Calendar.DAY_OF_WEEK);
+		int lastDay = calView.getActualMaximum(Calendar.DAY_OF_MONTH);
+		
+		// 화면에 보여줄 년/월 기준
+		int prevYear = yy;
+		int prevMonth = mm - 1;
+		int nextYear = yy;
+		int nextMonth = mm + 1;
+		
+		if(prevMonth == -1) {
+			prevMonth = 11;
+			prevYear--;
+		}
+		if(nextMonth == 12) {
+			nextMonth = 0;
+			nextYear++;
+		}
+		
+		Calendar calPrev = Calendar.getInstance();
+		calPrev.set(prevYear, prevMonth, 1);
+		int prevLastDay = calPrev.getActualMaximum(Calendar.DAY_OF_MONTH);
+		
+		Calendar calNext = Calendar.getInstance();
+		calNext.set(nextYear, nextMonth, 1);
+		int nextStartWeek = calNext.get(Calendar.DAY_OF_WEEK);
+		
+		//화면에 보여줄 달력에 필요한 변수를 request에 담아서 넘긴다.
+		request.setAttribute("toYear", toYear);
+		request.setAttribute("toMonth", toMonth);
+		request.setAttribute("toDay", toDay);
+		
+		request.setAttribute("yy", yy);
+		request.setAttribute("mm", mm);
+		request.setAttribute("startWeek", startWeek);
+		request.setAttribute("lastDay", lastDay);
+		
+		request.setAttribute("prevYear", prevYear);
+		request.setAttribute("prevMonth", prevMonth);
+		request.setAttribute("nextYear", nextYear);
+		request.setAttribute("nextMonth", nextMonth);
+		
+		
+		request.setAttribute("nextStartWeek", nextStartWeek);
+		request.setAttribute("prevLastDay", prevLastDay);
+		
+		
+		//System.out.println("yy : " + yy + ", mm : " + (mm+1) + ", week : " + startWeek + ", lastDay : " + lastDay);
 	}
 
 	

@@ -102,6 +102,7 @@ public class BoardServiceImpl implements BoardService {
 		}
 	}
 
+	// 게시글에 사진포함되어 있을때 사진 삭제하기
 	@Override
 	public void imgDelete(String content) {
 		//      0         1         2         3         4         4
@@ -202,4 +203,3 @@ public class BoardServiceImpl implements BoardService {
 
 	
 }
-

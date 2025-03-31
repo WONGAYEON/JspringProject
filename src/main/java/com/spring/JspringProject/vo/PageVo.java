@@ -17,4 +17,5 @@ public class PageVo {
 	private String searchStr;
 	private String searchString;
 	private String part;
+
 }

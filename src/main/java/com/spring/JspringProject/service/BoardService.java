@@ -42,4 +42,3 @@ public interface BoardService {
 	int setBoardReplyUpdateCheckOk(BoardReplyVo vo);
 
 }
-

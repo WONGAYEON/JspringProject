@@ -1,5 +1,7 @@
 package com.spring.JspringProject.service;
 
+import java.util.List;
+
 import com.spring.JspringProject.vo.ComplaintVo;
 
 public interface AdminService {
@@ -10,6 +12,20 @@ public interface AdminService {
 
 	int setBoardComplaintInput(ComplaintVo vo);
 
-	int setBoardTableComplaintOk(int partIdx);
+	void setBoardTableComplaintOk(int partIdx);
+
+	String setLevelSelectCheck(String idxSelectArray, int levelSelect);
+
+	List<ComplaintVo> getComplaintList();
+
+	int setContentChange(int contentIdx, String contentSw);
+
+	int setContentDelete(int contentIdx, String part);
+
+	int setComplaintDelete(int partIdx, String part);
+
+	int setComplaintProcess(int partIdx, String complaintSw);
+
+	void setComplaintProcessOk(int idx, String complaintSw);
 
 }
