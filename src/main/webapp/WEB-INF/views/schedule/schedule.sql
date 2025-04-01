@@ -11,6 +11,16 @@ create table schedule(
 );
 desc schedule;
 
+
+select * from schedule where date_format(sDate, '%Y-%m') = '2025-04' and mid = 'hkd1234';
+select * from schedule where date_format(sDate, '%Y-%m') = '2025-04' and mid = 'hkd1234' order by sDate;
+select * from schedule where date_format(sDate, '%Y-%m') = '2025-04' and mid = 'hkd1234' order by sDate, part;
+select *, count(part) as partCnt from schedule where date_format(sDate, '%Y-%m') = '2025-04' and mid = 'hkd1234' group by sDate order by sDate, part;
+select *, count(part) as partCnt from schedule where date_format(sDate, '%Y-%m') = '2025-04' and mid = 'hkd1234' group by sDate,part order by sDate, part;
+
+
+
+
 insert into schedule values (default, 'hkd1234', '2025-03-15', '학습', '프로젝트 기획 초안');
 insert into schedule values (default, 'hkd1234', '2025-03-31', '업무', 'A팀 프로젝트 초안 회의');
 insert into schedule values (default, 'hkd1234', '2025-04-05', '모임', '식목일 모임, 10시 청주체육관 기념식수');
