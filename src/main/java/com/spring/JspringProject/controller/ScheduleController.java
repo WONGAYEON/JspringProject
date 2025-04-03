@@ -75,4 +75,3 @@ public class ScheduleController {
 		return scheduleService.setScheduleDeleteOk(idx) + "";
 	}
 }
-

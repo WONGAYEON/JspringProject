@@ -67,7 +67,7 @@
   					alert('일정이 등록되었습니다.');
   					location.reload();
   				}
-  				else alert("일정 등록 실패");
+  				else alert("일정등록 실패~~");
   			},
   			error : function() { alert("전송오류!"); }
   		});
@@ -80,11 +80,12 @@
   		str += '<table class="table table-bordered">';
   		str += '<tr><th>일정분류</th><td>';
   		str += '<select name="part" id="part'+idx+'" class="form-select">';
-  		str += '<option>모임</option>';
-  		str += '<option>업무</option>';
-  		str += '<option selected>학습</option>';
-  		str += '<option>여행</option>';
-  		str += '<option>기타</option>';
+  		if(part != '모임') str += '<option>모임</option>';
+  		if(part != '업무') str += '<option>업무</option>';
+  		if(part != '학습') str += '<option>학습</option>';
+  		if(part != '여행') str += '<option>여행</option>';
+  		if(part != '기타') str += '<option>기타</option>';
+  		//str += '<option '+part+'=="기타" ? "selected" : "">기타</option>';   // 삼항연산자 사용인 경우(마지막줄 없애야함)
   		str += '<option selected>'+part+'</option>';
   		str += '</select>';
   		str += '</td></tr>';
@@ -125,29 +126,29 @@
   					alert('일정이 수정되었습니다.');
   					location.reload();
   				}
-  				else alert("일정 수정 실패");
+  				else alert("일정수정 실패~~");
   			},
   			error : function() { alert("전송오류!"); }
   		});
   	}
   	
-  	// 일정 삭제처리
-  	function delCheck(idx){
-  		let ans = confirm("선택한 일정을 삭제하시겠습니까?");
+  	// 스케줄 삭제처리
+  	function delCheck(idx) {
+  		let ans = confirm("선택된 일정을 삭제하시겠습니까?");
   		if(!ans) return false;
   		
   		$.ajax({
-  			url : "scheduleDeleteOk",
+  			url  : "scheduleDeleteOk",
   			type : "post",
   			data : {idx : idx},
-  			success:function(res){
-  				if(res != "0"){
+  			success:function(res) {
+  				if(res != "0") {
   					alert('일정이 삭제되었습니다.');
   					location.reload();
   				}
-  				else alert("일정 삭제 실패");
+  				else alert("일정삭제 실패~~");
   			},
-  			error : function() { alert ("전송오류!"); }
+  			error : function() { alert("전송오류!"); }
   		});
   	}
   </script>

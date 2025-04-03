@@ -64,6 +64,42 @@
     		error : function() { alert("전송오류!"); }
     	});
     }
+    
+    // SRT 열차 시간 조회
+    function crawlingCheck() {
+    	$("#spinnerIcon").show();
+    	let stationStart = $("#stationStart").val();
+    	let stationStop = $("#stationStop").val();
+    	
+    	$.ajax({
+				url   : "${ctp}/study/crawling/train",
+				type  : "post",
+				data  : {
+					stationStart : stationStart,
+					stationStop : stationStop
+				},
+    		success:function(vos) {
+    			if(vos != "") {
+    				let str = '';
+    				str += '<table class="table table-bordered text-center"><tr class="table-dark text-dark"><th>열차</th><th>출발</th><th>도착</th><th>소요시간</th><th>요금</th></tr>';
+    				for(let i=0; i<vos.length; i++) {
+	    				str += '<tr>';
+	    				str += '<td>'+vos[i].train+'</td>';
+	    				str += '<td>'+vos[i].start+'</td>';
+	    				str += '<td>'+vos[i].arrive+'</td>';
+	    				str += '<td>'+vos[i].time+'</td>';
+	    				str += '<td><a href="${ctp}/data/ckeditor/screenshot.png" target="_blank">'+vos[i].price+'</a></td>';
+	    				str += '</tr>';
+    				}
+    				str += '</tr></table>';
+    				$("#demo").html(str);
+    				
+	  				$("#spinnerIcon").hide();
+    			}
+    			else $("#demo").html("검색한 자료가 없습니다.");
+    		}
+    	});
+    }
   </script>
 </head>
 <body>
@@ -90,8 +126,6 @@
   </form>
   
   <hr class="border-secondary">
-  <div id="demo"></div>
-  <hr class="border-secondary">
   <h4>CGV 상영관 무비차트</h4>
   <div class="input-group mb-3">
     <div class="input-group-text">CGV 상영관 무비챠트</div>
@@ -104,6 +138,26 @@
       </span>
     </div>
   </div>
+  <hr class="border">
+  <h4>SRT 승차권 조회</h4>
+  <form name="trainform">
+    <div class="input-group mb-3">
+      <span class="input-group-text mr-2">출발역</span>
+      <div class="input-group-append mr-3"><input type="text" name="stationStart" id="stationStart" value="대전" class="form-control"/></div>
+      ~
+      <span class="input-group-text ml-3 mr-2">도착역</span>
+      <div class="input-group-append"><input type="text" name="stationStop" id="stationStop" value="부산" class="form-control"/></div>
+    </div>
+	  <div class="input-group mb-3">
+	    <div class="input-group-prepend"><input type="button" value="새로고침" onclick="location.reload()" class="btn btn-info" /></div>
+	    <span class="input-group-text" style="width:50%">SRT 열차 시간표 조회</span>
+	    <div class="input-group-append mr-1"><input type="button" value="웹크롤링2" onclick="crawlingCheck()" class="btn btn-success" /></div>
+	    <div class="input-group-append"><span id="spinnerIcon" style="display:none"><span class="spinner-border"></span>검색중입니다.<span class="spinner-border"></span></span></div>
+	  </div>
+	  <hr class="border">
+  </form>
+  <div id="demo"></div>
+  <hr class="border-secondary">
   <h2>크롤링/스크래핑</h2>
   <pre>
   - 크롤링(crawling)은 웹 페이지의 정보를 자동으로 수집하고 저장하는 작업을 말한다.

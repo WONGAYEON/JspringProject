@@ -16,7 +16,7 @@ import com.spring.JspringProject.vo.ScheduleVo;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
-	
+
 	@Autowired
 	ScheduleDao scheduleDao;
 
@@ -32,16 +32,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 		
 		// 화면에 보여주는 달력(년/월)
 		Calendar calView = Calendar.getInstance();
-		int yy = request.getParameter("yy")==null ? calToday.get(Calendar.YEAR) : Integer.parseInt(request.getParameter("yy"));
-		int mm = request.getParameter("mm")==null ? calToday.get(Calendar.MONTH) : Integer.parseInt(request.getParameter("mm"));
-		
-		System.out.println("yy : " + yy + ", mm : " + mm);
+		int yy = request.getParameter("yy")==null ? calView.get(Calendar.YEAR) : Integer.parseInt(request.getParameter("yy"));
+		int mm = request.getParameter("mm")==null ? calView.get(Calendar.MONTH): Integer.parseInt(request.getParameter("mm"));
 		
 		if(mm < 0) {
 			mm = 11;
 			yy--;
 		}
-		else if(mm > 11) {
+		if(mm > 11) {
 			mm = 0;
 			yy++;
 		}
@@ -50,7 +48,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		int startWeek = calView.get(Calendar.DAY_OF_WEEK);
 		int lastDay = calView.getActualMaximum(Calendar.DAY_OF_MONTH);
 		
-		// 화면에 보여줄 년/월 기준
+		// 화면에 보여줄 년월기준..
 		int prevYear = yy;
 		int prevMonth = mm - 1;
 		int nextYear = yy;
@@ -73,7 +71,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		calNext.set(nextYear, nextMonth, 1);
 		int nextStartWeek = calNext.get(Calendar.DAY_OF_WEEK);
 		
-		//화면에 보여줄 달력에 필요한 변수를 request에 담아서 넘긴다.
+		// 화면에 보여줄 달력에 필요한 변수를 request에 담아서 넘긴다.
 		request.setAttribute("toYear", toYear);
 		request.setAttribute("toMonth", toMonth);
 		request.setAttribute("toDay", toDay);
@@ -88,22 +86,22 @@ public class ScheduleServiceImpl implements ScheduleService {
 		request.setAttribute("nextYear", nextYear);
 		request.setAttribute("nextMonth", nextMonth);
 		
-		
 		request.setAttribute("nextStartWeek", nextStartWeek);
 		request.setAttribute("prevLastDay", prevLastDay);
-		
-		// 등록된 일정을 보여주기/처리하기
+
+		// 등록된 일정을 보여주기 처리하기
 		HttpSession session = request.getSession();
 		String mid = (String) session.getAttribute("sMid");
 		int level = (int) session.getAttribute("sLevel");
 		
 		String ym = "";
-		int intMM = mm + 1; 
+		int intMM = mm + 1;
 		if(intMM >= 1 && intMM <= 9) ym = yy + "-0" + intMM;
+		else ym = yy + "-" + intMM;
 		
 		List<ScheduleVo> vos = scheduleDao.getScheduleList(mid, ym, level);
 		request.setAttribute("vos", vos);
-		System.out.println("vos : " + vos);
+		//System.out.println("vos : " + vos);
 	}
 
 	@Override
@@ -125,5 +123,5 @@ public class ScheduleServiceImpl implements ScheduleService {
 	public int setScheduleDeleteOk(int idx) {
 		return scheduleDao.setScheduleDeleteOk(idx);
 	}
-
+	
 }

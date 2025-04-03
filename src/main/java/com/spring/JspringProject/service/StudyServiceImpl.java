@@ -216,16 +216,14 @@ public class StudyServiceImpl implements StudyService {
 		
 		// 화면에 보여주는 달력(년/월)
 		Calendar calView = Calendar.getInstance();
-		int yy = request.getParameter("yy")==null ? calToday.get(Calendar.YEAR) : Integer.parseInt(request.getParameter("yy"));
-		int mm = request.getParameter("mm")==null ? calToday.get(Calendar.MONTH) : Integer.parseInt(request.getParameter("mm"));
-		
-		System.out.println("yy : " + yy + ", mm : " + mm);
+		int yy = request.getParameter("yy")==null ? calView.get(Calendar.YEAR) : Integer.parseInt(request.getParameter("yy"));
+		int mm = request.getParameter("mm")==null ? calView.get(Calendar.MONTH): Integer.parseInt(request.getParameter("mm"));
 		
 		if(mm < 0) {
 			mm = 11;
 			yy--;
 		}
-		else if(mm > 11) {
+		if(mm > 11) {
 			mm = 0;
 			yy++;
 		}
@@ -234,7 +232,7 @@ public class StudyServiceImpl implements StudyService {
 		int startWeek = calView.get(Calendar.DAY_OF_WEEK);
 		int lastDay = calView.getActualMaximum(Calendar.DAY_OF_MONTH);
 		
-		// 화면에 보여줄 년/월 기준
+		// 화면에 보여줄 년월기준..
 		int prevYear = yy;
 		int prevMonth = mm - 1;
 		int nextYear = yy;
@@ -257,7 +255,7 @@ public class StudyServiceImpl implements StudyService {
 		calNext.set(nextYear, nextMonth, 1);
 		int nextStartWeek = calNext.get(Calendar.DAY_OF_WEEK);
 		
-		//화면에 보여줄 달력에 필요한 변수를 request에 담아서 넘긴다.
+		// 화면에 보여줄 달력에 필요한 변수를 request에 담아서 넘긴다.
 		request.setAttribute("toYear", toYear);
 		request.setAttribute("toMonth", toMonth);
 		request.setAttribute("toDay", toDay);
@@ -272,12 +270,10 @@ public class StudyServiceImpl implements StudyService {
 		request.setAttribute("nextYear", nextYear);
 		request.setAttribute("nextMonth", nextMonth);
 		
-		
 		request.setAttribute("nextStartWeek", nextStartWeek);
 		request.setAttribute("prevLastDay", prevLastDay);
 		
-		
-		//System.out.println("yy : " + yy + ", mm : " + (mm+1) + ", week : " + startWeek + ", lastDay : " + lastDay);
+		//System.out.println("yy: " + yy + ", mm: " + (mm+1) + ", week: " + startWeek + ", lastDay:" + lastDay);
 	}
 
 	

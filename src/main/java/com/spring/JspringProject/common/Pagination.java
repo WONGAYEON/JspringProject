@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.JspringProject.dao.BoardDao;
 import com.spring.JspringProject.dao.PdsDao;
+import com.spring.JspringProject.dao.WebMessageDao;
 import com.spring.JspringProject.vo.PageVo;
 
 @Service
@@ -15,6 +16,9 @@ public class Pagination {
 	
 	@Autowired
 	PdsDao pdsDao;
+	
+	@Autowired
+	WebMessageDao webMessageDao;
 
 	public PageVo getTotRecCnt(int pag, int pageSize, String section, String part, String searchString) {
 		PageVo vo = new PageVo();
@@ -36,9 +40,14 @@ public class Pagination {
 		else if(section.equals("pds")) {
 			totRecCnt = pdsDao.getPdsTotRecCnt(part);
 		}
+		else if(section.equals("webMessage")) {
+			String mid = part;
+			int mSw = Integer.parseInt(searchString);
+			totRecCnt = webMessageDao.getTotRecCnt(mid, mSw);
+		}
 		
 		// 검색기(search(part)와 searchString)를 통한 리스트를 구현하기위한 처리
-		if(!searchString.equals("")) {
+		if(section.equals("pds") && !searchString.equals("")) {
 			search = part;
 			if(totRecCnt != 0) pageSize = totRecCnt;
 			if(part.equals("title")) searchStr = "글제목";

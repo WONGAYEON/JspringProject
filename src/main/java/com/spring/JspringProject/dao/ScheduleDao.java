@@ -6,9 +6,11 @@ import org.apache.ibatis.annotations.Param;
 
 import com.spring.JspringProject.vo.ScheduleVo;
 
+//@Mapper
+//@ResponseBody
 public interface ScheduleDao {
 
-	List<ScheduleVo> getScheduleList(@Param("mid") String mid,@Param("ym") String ym,@Param("level") int level);
+	List<ScheduleVo> getScheduleList(@Param("mid") String mid, @Param("ym") String ym, @Param("level") int level);
 
 	List<ScheduleVo> getScheduleMenu(@Param("mid") String mid, @Param("ymd") String ymd);
 
