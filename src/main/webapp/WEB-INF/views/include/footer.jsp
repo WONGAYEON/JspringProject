@@ -10,6 +10,6 @@
   <i class="fa fa-pinterest-p w3-hover-opacity"></i>
   <i class="fa fa-twitter w3-hover-opacity"></i>
   <i class="fa fa-linkedin w3-hover-opacity"></i>
-  <div class="w3-medium">Powered by <a href="${ctp}/" target="_blank">Happy Cheon</a></div>
+  <div class="w3-medium">Powered by <a href="${ctp}/" target="_blank">YEON</a></div>
   <%-- <div class="text-center"><%=request.getSession().getServletContext().getRealPath("/") %></div> --%>
 </footer>

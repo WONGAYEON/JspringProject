@@ -10,7 +10,7 @@ import com.spring.JspringProject.vo.WebMessageVo;
 
 @Service
 public class WebMessageServiceImpl implements WebMessageService {
-	
+
 	@Autowired
 	WebMessageDao webMessageDao;
 
@@ -48,5 +48,5 @@ public class WebMessageServiceImpl implements WebMessageService {
 	public void setWebMessageDeleteAllProcess() {
 		webMessageDao.setWebMessageDeleteAllProcess();
 	}
-
+	
 }

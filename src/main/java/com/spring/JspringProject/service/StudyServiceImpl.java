@@ -1,5 +1,7 @@
 package com.spring.JspringProject.service;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +9,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +20,16 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.spring.JspringProject.common.ProjectProvide;
 import com.spring.JspringProject.dao.StudyDao;
+import com.spring.JspringProject.vo.ChartVo;
+import com.spring.JspringProject.vo.QrCodeVo;
 
 @Service
 public class StudyServiceImpl implements StudyService {
@@ -276,7 +288,82 @@ public class StudyServiceImpl implements StudyService {
 		//System.out.println("yy: " + yy + ", mm: " + (mm+1) + ", week: " + startWeek + ", lastDay:" + lastDay);
 	}
 
-	
-	
+	@Override
+	public List<ChartVo> getRecentlyVisitCount(int i) {
+		return studyDao.getRecentlyVisitCount(i);
+	}
+
+	@Override
+	public String setQrCodeCreate(String mid) {
+		String qrCodeName = projectProvide.saveFileName(mid);
+		String qrCodeImage = "생성된 QR코드명 : " + qrCodeName;
+		
+		projectProvide.qrCodeCreate(qrCodeName, qrCodeImage, "qrCode");
+		
+		return qrCodeName;
+	}
+
+	@Override
+	public String setQrCodeCreate(QrCodeVo vo) {
+		String qrCodeName = projectProvide.newNameCreate(2); // '2504071227X7_' 랜덤으로 넘어온다는 뜻!
+		String qrCodeImage = "";
+		
+		// 저장되는 QR코드사진의 이름
+		qrCodeName += vo.getMid() + "_" + vo.getName() + "_" + vo.getEmail();
+		// QR코드안에 들어가는 내용
+		qrCodeImage += "생성날짜 : " + "20" + qrCodeName.substring(0,2) +"년, " + qrCodeName.substring(2,4) + "월, " + qrCodeName.substring(4,6) + "일\n";
+		qrCodeImage += "아이디 : " + vo.getMid() + "\n";
+		qrCodeImage += "성명 : " + vo.getName() + "\n";
+		qrCodeImage += "이메일 : " + vo.getEmail();
+		
+		projectProvide.qrCodeCreate(qrCodeName, qrCodeImage, "qrCode");
+		
+		return qrCodeName;
+	}
+
+	@Override
+	public String setQrCodeCreate2(QrCodeVo vo) {
+		String qrCodeName = projectProvide.newNameCreate(2); // '2504071227X7_' 랜덤으로 넘어온다는 뜻!
+		String qrCodeImage = "";
+		
+		qrCodeName += vo.getMoveUrl();
+		qrCodeImage += vo.getMoveUrl();
+		
+		projectProvide.qrCodeCreate(qrCodeName, qrCodeImage, "qrCode");
+		
+		return qrCodeName;
+	}
+
+	@Override
+	public String setQrCodeCreate3(QrCodeVo vo) {
+		// QR코드 생성(예매처리)
+		String qrCodeName = projectProvide.newNameCreate(2); // '2504071227X7_' 랜덤으로 넘어온다는 뜻!
+		String qrCodeImage = "";
+		
+		qrCodeName += vo.getMid() + "_" + vo.getMovieName() + "_" + vo.getMovieDate() + "_" + vo.getMovieTime() + "_" + vo.getMovieAdult() + "_" + vo.getMovieChild();
+		qrCodeImage += "구매자 ID : " + vo.getMid() + "\n";
+		qrCodeImage += "영화제목 : " + vo.getMovieName() + "\n";
+		qrCodeImage += "상영일자 : " + vo.getMovieDate() + "\n";
+		qrCodeImage += "상영시간 : " + vo.getMovieTime() + "\n";
+		qrCodeImage += "예매일자 : " + "20" + qrCodeName.substring(0,2) +"년, " + qrCodeName.substring(2,4) + "월, " + qrCodeName.substring(4,6) + "일\n";
+		qrCodeImage += "성인티켓 구매 수 : " + vo.getMovieAdult() + "\n";
+		qrCodeImage += "어린이티켓 구매 수 : " + vo.getMovieChild() + "\n";
+		
+		projectProvide.qrCodeCreate(qrCodeName, qrCodeImage, "ticket");
+		
+		// DB에 예약정보 저장하기
+		vo.setPublishDate("20" + qrCodeName.substring(0,2) +"년, " + qrCodeName.substring(2,4) + "월, " + qrCodeName.substring(4,6) + "일");
+		vo.setQrCodeName(qrCodeName);
+		studyDao.setQrCodeCreate(vo);
+		
+		// 예약된 정보를 회원 메일로 전송처리한다.
+		
+		return qrCodeName;	
+	}
+
+	@Override
+	public QrCodeVo setQrCodeSearch(String qrCode) {
+		return studyDao.setQrCodeSearch(qrCode);
+	}
 	
 }

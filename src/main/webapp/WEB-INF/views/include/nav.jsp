@@ -7,7 +7,7 @@
   function deleteCheck() {
 	  let ans = confirm("정말 탈퇴 하실겁니까?");
 	  if(ans) {
-		  ans = confirm("탈퇴후 1달간 같은 아이디로 재가입할수 없습니다.\n\n계속 진행할까요?");
+		  ans = confirm("탈퇴후 1개월간 같은 아이디로 재가입할수 없습니다.\n\n계속 진행할까요?");
 		  if(ans) location.href = "${ctp}/member/pwdCheck/d";
 	  }
   }
@@ -31,6 +31,8 @@
 	        <a href="${ctp}/study/mail/mailForm" class="w3-bar-item w3-button">메일 연습</a>
 	        <a href="${ctp}/study/modal/modalForm" class="w3-bar-item w3-button">모달 연습</a>
 	        <a href="${ctp}/study/calendar" class="w3-bar-item w3-button">인터넷 달력</a>
+	        <a href="${ctp}/study/alphaNumericForm" class="w3-bar-item w3-button">랜덤 알파벳/숫자</a>
+	        <a href="${ctp}/errorPage/errorMain" class="w3-bar-item w3-button">Error 연습</a>
 	      </div>
 	    </div>
 	    <div class="w3-dropdown-hover w3-hide-small">
@@ -38,9 +40,11 @@
 	      <div class="w3-dropdown-content w3-bar-block w3-card-4">
 	        <a href="#" class="w3-bar-item w3-button">카카오맵</a>
 	        <a href="#" class="w3-bar-item w3-button">날씨API</a>
-	        <a href="#" class="w3-bar-item w3-button">웹차트</a>
+	        <a href="${ctp}/study/chart/chart1" class="w3-bar-item w3-button">웹차트 1</a>
+	        <a href="${ctp}/study/chart2/chart2" class="w3-bar-item w3-button">웹차트 2</a>
 	        <a href="${ctp}/study/crawling/jsoup" class="w3-bar-item w3-button">웹크롤링(jsoup)</a>
 	        <a href="${ctp}/study/crawling/selenium" class="w3-bar-item w3-button">웹크롤링(selenium)</a>
+	        <a href="${ctp}/study/qrCode/qrCodeForm" class="w3-bar-item w3-button">QR Code</a>
 	      </div>
 	    </div>
 	    <div class="w3-dropdown-hover w3-hide-small">

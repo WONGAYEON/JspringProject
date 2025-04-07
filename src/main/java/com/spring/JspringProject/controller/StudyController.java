@@ -11,7 +11,9 @@ import java.util.Map;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,15 +33,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.spring.JspringProject.service.MemberService;
 import com.spring.JspringProject.service.StudyService;
+import com.spring.JspringProject.vo.ChartVo;
 import com.spring.JspringProject.vo.CrawlingVo;
 import com.spring.JspringProject.vo.MailVo;
 import com.spring.JspringProject.vo.MemberVo;
+import com.spring.JspringProject.vo.QrCodeVo;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -547,4 +552,142 @@ public class StudyController {
 		}
 		return array;
 	}
+	
+	// 웹(구글) 차트 연습2
+	@RequestMapping(value="/chart/chart1", method = RequestMethod.GET)
+	public String chart1Get(Model model,
+			@RequestParam(name="part", defaultValue = "barV", required=false) String part
+		) {
+		model.addAttribute("part", part);
+		return "study/chart/chart1";
+	}
+	
+	// 웹(구글) 차트 연습2
+	@RequestMapping(value="/chart2/chart2", method = RequestMethod.GET)
+	public String chart2Get(Model model,
+			@RequestParam(name="part", defaultValue = "barV", required=false) String part
+			) {
+		model.addAttribute("part", part);
+		return "study/chart2/chart2";
+	}
+	
+	@RequestMapping(value = "/chart2/googleChart2", method = RequestMethod.POST)
+	public String googleChart2Post(Model model, ChartVo vo) {
+		System.out.println("vo : " + vo);
+		model.addAttribute("vo", vo);
+		return "study/chart2/chart2";
+	}
+	
+	@RequestMapping(value = "/chart2/googleChart2Recently", method = RequestMethod.GET)
+	public String googleChart2RecentlyGet(Model model, ChartVo vo) {
+		
+		List<ChartVo> vos = null;
+		if(vo.getPart().equals("line")) {
+			System.out.println("2part : " + vo.getPart());
+			vos = studyService.getRecentlyVisitCount(1);
+			// vos자료를 차트에 표시처리가 잘 되지 않을경우에는 각각의 자료를 다시 편집해서 차트로 보내줘야 한다.
+			String[] visitDates = new String[7];
+			int[] visitCounts = new int[7];
+			
+			for(int i=0; i<7; i++) {
+				visitDates[i] = vos.get(i).getVisitDate();
+				visitCounts[i] = vos.get(i).getVisitCount();
+			}
+			System.out.println("vos : " + vos);
+			model.addAttribute("part", vo.getPart());
+			model.addAttribute("xTitle", "방문날짜");
+			model.addAttribute("regend", "하루 총 방문자수");
+			
+			model.addAttribute("visitDates", visitDates);
+			model.addAttribute("visitCounts", visitCounts);
+			model.addAttribute("title", "최근 7일간 방문횟수");
+			model.addAttribute("subTitle", "(최근 7일간 방문한 해당일자의 방문자 총수를 표시합니다.");
+		}
+		return "study/chart2/chart2";
+	}
+	
+	// 임의의 영문자와 숫자를 랜덤하게 생성시켜주기
+	@RequestMapping(value = "/alphaNumericForm", method = RequestMethod.GET)
+	public String alphaNumericFormGet() {
+		return "study/alphaNumeric/alphaNumericForm";
+	}
+	
+	// 임의의 영문자와 숫자를 랜덤하게 생성시켜주기
+	@ResponseBody
+	@RequestMapping(value = "/randomAlphaNumeric", method = RequestMethod.POST)
+	public String randomAlphaNumericPost() {
+		//String res = RandomStringUtils.randomAlphanumeric(32);
+		return RandomStringUtils.randomAlphanumeric(64);
+	}
+	
+	// QR Code 폼보기
+	@RequestMapping(value = "/qrCode/qrCodeForm", method = RequestMethod.GET)
+	public String qrCodeFormGet() {
+		return "study/qrCode/qrCodeForm";
+	}
+	
+	// QR Code 만들기
+	@ResponseBody
+	@RequestMapping(value = "/qrCode/qrCodeCreate", method = RequestMethod.POST)
+	public String qrCodeCreatePost(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String mid = (String) session.getAttribute("sMid");
+		
+		return studyService.setQrCodeCreate(mid);
+	}
+	
+	// QR Code 개인정보 등록 폼보기
+	@RequestMapping(value = "/qrCode/qrCodeEx1", method = RequestMethod.GET)
+	public String qrCodeEx1Get() {
+		return "study/qrCode/qrCodeEx1";
+	}
+	
+	// QR Code 만들기(개인정보를 QR코드로 생성하기)
+	@ResponseBody
+	@RequestMapping(value = "/qrCode/qrCodeCreate1", method = RequestMethod.POST, produces="application/text; charset=utf-8")
+	public String qrCodeCreate1Post(QrCodeVo vo) {
+		return studyService.setQrCodeCreate(vo);
+	}
+	
+	// QR Code 소개사이트 등록 폼보기
+	@RequestMapping(value = "/qrCode/qrCodeEx2", method = RequestMethod.GET)
+	public String qrCodeEx2Get() {
+		return "study/qrCode/qrCodeEx2";
+	}
+	
+	// QR Code 만들기(소개사이트를 QR코드로 생성하기)
+	@ResponseBody
+	@RequestMapping(value = "/qrCode/qrCodeCreate2", method = RequestMethod.POST, produces="application/text; charset=utf-8")
+	public String qrCodeCreate2Post(QrCodeVo vo) {
+		return studyService.setQrCodeCreate2(vo);
+	}
+	
+	// QR Code 영화티켓예매 등록 폼보기
+	@RequestMapping(value = "/qrCode/qrCodeEx3", method = RequestMethod.GET)
+	public String qrCodeEx3Get() {
+		return "study/qrCode/qrCodeEx3";
+	}
+	
+	// QR Code 만들기(영화티켓예매 QR코드로 생성 및 티켓정보 DB에 저장하기)
+	@ResponseBody
+	@RequestMapping(value = "/qrCode/qrCodeCreate3", method = RequestMethod.POST, produces="application/text; charset=utf-8")
+	public String qrCodeCreate3Post(QrCodeVo vo) {
+		return studyService.setQrCodeCreate3(vo);
+	}
+	
+	// QR Code 내용 DB에서 검색하기
+	@ResponseBody
+	@RequestMapping(value = "/qrCode/qrCodeSearch", method = RequestMethod.POST)
+	public QrCodeVo qrCodeSearchPost(String qrCode) {
+		return studyService.setQrCodeSearch(qrCode);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

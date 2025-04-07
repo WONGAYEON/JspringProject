@@ -37,7 +37,7 @@
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
-  <h3 class="text-center">✉ 메세지 관리 ✉</h3>
+  <h3 class="text-center">☆ 메세지 관리 ☆</h3>
   <div>(현재접속자:<font color="red">${sMid}</font>)</div>
   <div id="leftWindow">
   	<p><br/></p>

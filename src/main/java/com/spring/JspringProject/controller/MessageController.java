@@ -248,15 +248,15 @@ public class MessageController {
 			model.addAttribute("url", "webMessage/webMessage?mSw=3");
 		}
 		else if(msgFlag.equals("wmInputNo")) {
-			model.addAttribute("message", "메세지 전송 실패");
+			model.addAttribute("message", "메세지 실패~~");
 			model.addAttribute("url", "webMessage/webMessage?mSw=0");
 		}
 		else if(msgFlag.equals("webMessageDeleteOk")) {
-			model.addAttribute("message", "메세지가 삭제되었습니다.");
+			model.addAttribute("message", "메세지가 삭제 되었습니다.");
 			model.addAttribute("url", "webMessage/webMessage?mSw="+mSw);
 		}
 		else if(msgFlag.equals("webMessageDeleteNo")) {
-			model.addAttribute("message", "메세지 삭제 실패");
+			model.addAttribute("message", "메세지 삭제 실패~");
 			model.addAttribute("url", "webMessage/webMessage?mSw="+mSw);
 		}
 		else if(msgFlag.equals("webMessageEmpty")) {
@@ -268,7 +268,7 @@ public class MessageController {
 			model.addAttribute("url", "webMessage/webMessage?mSw=5");
 		}
 		else if(msgFlag.equals("webMessageResetNo")) {
-			model.addAttribute("message", "휴지통 비우기 실패");
+			model.addAttribute("message", "휴지통 비우기 실패~~");
 			model.addAttribute("url", "webMessage/webMessage?mSw=5");
 		}
 		

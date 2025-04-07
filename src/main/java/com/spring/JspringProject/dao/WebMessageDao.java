@@ -11,10 +11,10 @@ public interface WebMessageDao {
 	int setWmInputOk(@Param("vo") WebMessageVo vo);
 
 	List<WebMessageVo> getWebMessageList(@Param("mid") String mid, @Param("mSw") int mSw, @Param("startIndexNo") int startIndexNo, @Param("pageSize") int pageSize);
-
+	
 	WebMessageVo getWebMessageContent(@Param("idx") int idx, @Param("mid") String mid);
 
-	int setWebDeleteCheck(@Param("idx") int idx,@Param("mFlag")  int mFlag);
+	int setWebDeleteCheck(@Param("idx") int idx, @Param("mFlag") int mFlag);
 
 	void setWebMessageSwUpdate(@Param("idx") int idx);
 

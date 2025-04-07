@@ -117,7 +117,7 @@
 			<scope>test</scope>
 		</dependency> 
 		
-<!-- lombok 라이브러리 -->
+		<!-- lombok 라이브러리 -->
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 	    <groupId>org.projectlombok</groupId>
@@ -253,7 +253,14 @@
 	    <version>4.4.0</version>
 	    <classifier>models</classifier>
 		</dependency>	
-
+		
+		<!-- QR Code 생성을 위한 구글라이브러리(zxing) -->
+		<!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
+		<dependency>
+		    <groupId>com.google.zxing</groupId>
+		    <artifactId>javase</artifactId>
+		    <version>3.5.3</version>
+		</dependency>
 
 
 		

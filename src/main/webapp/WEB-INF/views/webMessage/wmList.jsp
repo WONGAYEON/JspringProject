@@ -37,8 +37,8 @@
     <c:set var="curScrStartNo" value="${pageVo.curScrStartNo}" />
     <c:forEach var="vo" items="${vos}" varStatus="st">
       <tr>
-        <td>${curScrStartNo}</td>
         <%-- <td>${st.count}</td> --%>
+        <td>${curScrStartNo}</td>
 	      <td>
 	      	<c:if test="${mSw==1 || mSw==2 || mSw==5}">${vo.sendId}</c:if>
 	      	<c:if test="${mSw==3 || mSw==4}">${vo.receiveId}</c:if>
@@ -53,7 +53,7 @@
 	      	<c:if test="${mSw==3 || mSw==4}">${fn:substring(vo.receiveDate,0,19)}</c:if>
 	      </td>
       </tr>
-      <c:set var="curScrStartNo" value="${curScrStartNo - 1}" /> 
+      <c:set var="curScrStartNo" value="${curScrStartNo - 1}" />
     </c:forEach>
   </table>
 </div>
@@ -69,8 +69,8 @@
   	<c:if test="${pageVo.curBlock < pageVo.lastBlock}"><li class="page-item"><a class="page-link text-secondary" href="webMessage?mSw=${mSw}&mFlag=${mFlag}&pag=${(pageVo.curBlock+1)*pageVo.blockSize+1}&pageSize=${pageVo.pageSize}">다음블록</a></li></c:if>
   	<c:if test="${pageVo.pag < pageVo.totPage}"><li class="page-item"><a class="page-link text-secondary" href="webMessage?mSw=${mSw}&mFlag=${mFlag}&pag=${pageVo.totPage}&pageSize=${pageVo.pageSize}">마지막페이지</a></li></c:if>
   </ul>
-</div>
 <!-- 블록페이지 끝 -->
+</div>
 <p><br/></p>
 </body>
 </html>

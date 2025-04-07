@@ -41,7 +41,10 @@ public class WebMessageController {
 		) {
 		String mid = (String) session.getAttribute("sMid");
 		
-		if(mSw == 0) {}		  // 메세지 작성
+		if(mSw == 0) {		  // 메세지 작성
+			List<MemberVo> mVos = memberService.getMemberList(0, 100, 99);	// 현재 페이지리스트에 100건까지의 자료를 모두(99) 출력처리
+			model.addAttribute("mVos", mVos);
+		}
 		else if(mSw == 6) { // 메세지 내용 보기
 			WebMessageVo vo = webMessageService.getWebMessageContent(idx, mid);
 			if(vo.getReceiveSw().equals("n")) webMessageService.setWebMessageSwUpdate(idx);
@@ -60,8 +63,8 @@ public class WebMessageController {
 		}
 		else {	// mSw가 1~5까지 처리...
 			PageVo pageVo = pagination.getTotRecCnt(pag, pageSize, "webMessage", mid, mSw+"");
-			List<WebMessageVo> vos = webMessageService.getWebMessageList(mid, mSw, pageVo.getStartIndexNo(), pageSize);
 			//List<WebMessageVo> vos = webMessageService.getWebMessageList(mid, mSw, 0, pageSize);
+			List<WebMessageVo> vos = webMessageService.getWebMessageList(mid, mSw, pageVo.getStartIndexNo(), pageSize);
 			model.addAttribute("vos", vos);
 			model.addAttribute("pageVo", pageVo);
 		}
@@ -84,12 +87,10 @@ public class WebMessageController {
 	
 	// 메세지 삭제처리
 	@RequestMapping(value = "/webDeleteCheck", method = RequestMethod.GET)
-	public String webMessageDeleteGet(Model model, int idx, int mSw, int mFlag) {
+	public String webMessageDeleteOkGet(Model model, int idx, int mSw, int mFlag) {
 		model.addAttribute("mSw", mSw);
 		if(webMessageService.setWebDeleteCheck(idx, mFlag) != 0) return "redirect:/message/webMessageDeleteOk";
 		else return "redirect:/message/webMessageDeleteNo";
 	}
 	
 }
-
-
