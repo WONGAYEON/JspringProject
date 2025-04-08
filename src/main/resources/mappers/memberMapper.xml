@@ -23,6 +23,10 @@
   	</if>
   </select>
   
+  <select id="getMemberNickNameEmailCheck" resultType="com.spring.JspringProject.vo.MemberVo">
+  	select * from member where nickName = #{nickName} and email = #{email} limit 1;
+  </select>
+  
   
   
   
@@ -30,6 +34,10 @@
   
   <insert id="setMemberJoinOk">
     insert into member values (default,#{vo.mid},#{vo.pwd},#{vo.nickName},#{vo.name},#{vo.gender},#{vo.birthday},#{vo.tel},#{vo.address},#{vo.email},#{vo.job},#{vo.hobby},#{vo.photo},#{vo.content},#{vo.userInfor},default,default,default,default,default,default,default);
+  </insert>
+  
+  <insert id="setKakaoMemberInput">
+  		insert into member (mid, nickName, name, email, pwd, level) values (#{mid},#{nickName},#{nickName},#{email},#{pwd},2);
   </insert>
   
   

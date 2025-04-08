@@ -228,7 +228,7 @@
 	    <version>${org.springframework-version}</version>
 		</dependency>
 		
-		<!-- 크롤링을 위한 라이브러리(2개) -->
+		<!-- 크롤링을 위한 라이브러리(4개) -->
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
 		<dependency>
 		    <groupId>org.jsoup</groupId>
@@ -237,9 +237,9 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 		<dependency>
-		    <groupId>org.seleniumhq.selenium</groupId>
-		    <artifactId>selenium-java</artifactId>
-		    <version>4.26.0</version>
+	    <groupId>org.seleniumhq.selenium</groupId>
+	    <artifactId>selenium-java</artifactId>
+	    <version>4.26.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager -->
 		<dependency>
@@ -252,16 +252,23 @@
 	    <artifactId>stanford-corenlp</artifactId>
 	    <version>4.4.0</version>
 	    <classifier>models</classifier>
-		</dependency>	
+		</dependency>
 		
 		<!-- QR Code 생성을 위한 구글라이브러리(zxing) -->
 		<!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
 		<dependency>
-		    <groupId>com.google.zxing</groupId>
-		    <artifactId>javase</artifactId>
-		    <version>3.5.3</version>
+	    <groupId>com.google.zxing</groupId>
+	    <artifactId>javase</artifactId>
+	    <version>3.5.3</version>
 		</dependency>
-
+		
+		<!-- BackEnd 체크를 위한 validator라이브러리(유효성검사) -->
+		<!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+		<dependency>
+	    <groupId>org.hibernate.validator</groupId>
+	    <artifactId>hibernate-validator</artifactId>
+	    <version>6.2.0.Final</version>
+		</dependency>
 
 		
 		

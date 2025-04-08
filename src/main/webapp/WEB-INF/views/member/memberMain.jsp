@@ -15,8 +15,15 @@
 <p><br/></p>
 <div class="container">
   <h2>이곳은 회원 메인방입니다.</h2>
-  <hr/>
+  <hr class="border-secondary">
+  <c:if test="${sLoginNew == 'OK'}">
+  		<font color="red"><b>
+		  		현재 임시비밀번호를 발급하여 회원님의 메일로 전송하였습니다.<br/>
+		  		개인정보를 확인하시고, 비밀번호를 새로 변경해주세요.
+  		</b></font>
+  </c:if>
   <p>현재 로그인한 회원 : ${sMid}(<font color="red">${strLevel}</font>)</p>
+  <div>현재 로그인 한 곳: ${sLogin}</div>
   <hr/>
   <div class="row">
     <div class="col">

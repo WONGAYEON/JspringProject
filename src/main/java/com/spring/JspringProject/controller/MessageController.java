@@ -22,7 +22,8 @@ public class MessageController {
 			@RequestParam(name="search", defaultValue = "", required = false) String search,
 			@RequestParam(name="searchString", defaultValue = "", required = false) String searchString,
 			@RequestParam(name="part", defaultValue = "전체", required = false) String part,
-			@RequestParam(name="mSw", defaultValue = "1", required = false) String mSw
+			@RequestParam(name="mSw", defaultValue = "1", required = false) String mSw,
+			@RequestParam(name="tempFlag", defaultValue = "1", required = false) String tempFlag
 		) {
 		
 		if(msgFlag.equals("userInputOk")) {
@@ -271,6 +272,23 @@ public class MessageController {
 			model.addAttribute("message", "휴지통 비우기 실패~~");
 			model.addAttribute("url", "webMessage/webMessage?mSw=5");
 		}
+		else if(msgFlag.equals("transactionUserInputOk")) {
+			model.addAttribute("message", "user 회원 저장 완료");
+			model.addAttribute("url", "study/validator/validatorForm");
+		}
+		else if(msgFlag.equals("transactionUserInputNo")) {
+			model.addAttribute("message", "user 회원 저장 실패");
+			model.addAttribute("url", "study/validator/validatorForm");
+		}
+		else if(msgFlag.equals("backEndCheckNo")) {
+			String str = "";
+			if(tempFlag.equals("midSizeNo")) str = "아이디 길이를 확인하세요.";
+			else if(tempFlag.equals("nameEmpty")) str = "성명을 확인하세요.";
+			else if(tempFlag.equals("ageRangeNo")) str = "나이 범위를 확인하세요.";
+			model.addAttribute("message", "저장실패("+str+" 를 확인하세요.)-BackEndCheck");
+			model.addAttribute("url", "study/validator/validatorForm");
+		}
+
 		
 		return "include/message";
 	}
