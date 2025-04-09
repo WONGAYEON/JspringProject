@@ -24,4 +24,6 @@ public interface UserService {
 
 	int getUserCount();
 
+	List<UserVo> getUser2List();
+
 }

@@ -23,7 +23,7 @@ public class MessageController {
 			@RequestParam(name="searchString", defaultValue = "", required = false) String searchString,
 			@RequestParam(name="part", defaultValue = "전체", required = false) String part,
 			@RequestParam(name="mSw", defaultValue = "1", required = false) String mSw,
-			@RequestParam(name="tempFlag", defaultValue = "1", required = false) String tempFlag
+			@RequestParam(name="tempFlag", defaultValue = "", required = false) String tempFlag
 		) {
 		
 		if(msgFlag.equals("userInputOk")) {
@@ -277,18 +277,22 @@ public class MessageController {
 			model.addAttribute("url", "study/validator/validatorForm");
 		}
 		else if(msgFlag.equals("transactionUserInputNo")) {
-			model.addAttribute("message", "user 회원 저장 실패");
+			model.addAttribute("message", "user 회원 저장 실패~~");
 			model.addAttribute("url", "study/validator/validatorForm");
 		}
 		else if(msgFlag.equals("backEndCheckNo")) {
-			String str = "";
-			if(tempFlag.equals("midSizeNo")) str = "아이디 길이를 확인하세요.";
-			else if(tempFlag.equals("nameEmpty")) str = "성명을 확인하세요.";
-			else if(tempFlag.equals("ageRangeNo")) str = "나이 범위를 확인하세요.";
-			model.addAttribute("message", "저장실패("+str+" 를 확인하세요.)-BackEndCheck");
+			model.addAttribute("message", "저장실패("+tempFlag+")-BackEndCheck");
 			model.addAttribute("url", "study/validator/validatorForm");
 		}
-
+		else if(msgFlag.equals("transactionUserInputOk")) {
+			model.addAttribute("message", "user테이블에 회원이 등록되었습니다.");
+			model.addAttribute("url", "study/transaction/transactionForm");
+		}
+		else if(msgFlag.equals("transacTionbackEndCheckNo")) {
+			model.addAttribute("message", "user/user2테이블에 등록실패("+tempFlag+")~~");
+			model.addAttribute("url", "study/transaction/transactionForm");
+		}
+		
 		
 		return "include/message";
 	}

@@ -29,5 +29,8 @@ public class TransactionVo {
 	private int age;
 	
 	private String address;
+	
+	@Size(min=1, max=10, message="이름 길이가 잘못되었습니다./jobSizeNo")
+	private String job;
 
 }

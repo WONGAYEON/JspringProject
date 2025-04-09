@@ -2,18 +2,17 @@ package com.spring.JspringProject.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.time.Duration;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -27,16 +26,19 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,11 +46,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.spring.JspringProject.common.ARIAUtil;
+import com.spring.JspringProject.common.SecurityUtil;
 import com.spring.JspringProject.service.MemberService;
 import com.spring.JspringProject.service.StudyService;
 import com.spring.JspringProject.service.UserService;
 import com.spring.JspringProject.vo.ChartVo;
 import com.spring.JspringProject.vo.CrawlingVo;
+import com.spring.JspringProject.vo.DbPayMentVo;
 import com.spring.JspringProject.vo.MailVo;
 import com.spring.JspringProject.vo.MemberVo;
 import com.spring.JspringProject.vo.QrCodeVo;
@@ -74,6 +79,9 @@ public class StudyController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@RequestMapping("/ajax/ajaxForm")
 	public String ajaxFormGet() {
@@ -432,7 +440,7 @@ public class StudyController {
 //		System.setProperty("webdriver.chrome.driver", realPath + "chromedriver.exe");
 		
 		WebDriver driver = new ChromeDriver();
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+		//WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 		WebDriverManager.chromedriver().setup();
 		
 		driver.get(url);
@@ -585,7 +593,6 @@ public class StudyController {
 	
 	@RequestMapping(value = "/chart2/googleChart2", method = RequestMethod.POST)
 	public String googleChart2Post(Model model, ChartVo vo) {
-		System.out.println("vo : " + vo);
 		model.addAttribute("vo", vo);
 		return "study/chart2/chart2";
 	}
@@ -595,7 +602,6 @@ public class StudyController {
 		
 		List<ChartVo> vos = null;
 		if(vo.getPart().equals("line")) {
-			System.out.println("2part : " + vo.getPart());
 			vos = studyService.getRecentlyVisitCount(1);
 			// vos자료를 차트에 표시처리가 잘 되지 않을경우에는 각각의 자료를 다시 편집해서 차트로 보내줘야 한다.
 			String[] visitDates = new String[7];
@@ -605,7 +611,6 @@ public class StudyController {
 				visitDates[i] = vos.get(i).getVisitDate();
 				visitCounts[i] = vos.get(i).getVisitCount();
 			}
-			System.out.println("vos : " + vos);
 			model.addAttribute("part", vo.getPart());
 			model.addAttribute("xTitle", "방문날짜");
 			model.addAttribute("regend", "하루 총 방문자수");
@@ -615,6 +620,29 @@ public class StudyController {
 			model.addAttribute("title", "최근 7일간 방문횟수");
 			model.addAttribute("subTitle", "(최근 7일간 방문한 해당일자의 방문자 총수를 표시합니다.");
 		}
+		return "study/chart2/chart2";
+	}
+	
+	// 많이찾은 방문자 7명 차트로 표시하기
+	@RequestMapping(value = "/chart2/googleChart2Recently2", method = RequestMethod.GET)
+	public String googleChart2Recently2Get(Model model, ChartVo vo) {
+		List<ChartVo> vos = studyService.getRecentlyVisitCount(2);
+		
+		String[] visitDates = new String[7];
+		int[] visitCounts = new int[7];
+		for(int i=0; i<7; i++) {
+			visitDates[i] = vos.get(i).getVisitDate();
+			visitCounts[i] = vos.get(i).getVisitCount();
+		}
+		model.addAttribute("part", vo.getPart());
+		model.addAttribute("xTitle", "방문날짜");
+		model.addAttribute("legend", "총 방문수");
+		
+		model.addAttribute("visitDates", visitDates);
+		model.addAttribute("visitCounts", visitCounts);
+		model.addAttribute("title", "최근 가장 많이 방문한 회원 7명");
+		model.addAttribute("subTitle", "(가장 많이 방문한 방문자 7인의 방문횟수를 표시합니다.");
+		
 		return "study/chart2/chart2";
 	}
 	
@@ -667,20 +695,20 @@ public class StudyController {
 		return "study/qrCode/qrCodeEx2";
 	}
 	
-	// QR Code 만들기(소개사이트를 QR코드로 생성하기)
+	// QR Code 만들기(소개사이트 QR코드로 생성하기)
 	@ResponseBody
 	@RequestMapping(value = "/qrCode/qrCodeCreate2", method = RequestMethod.POST, produces="application/text; charset=utf-8")
 	public String qrCodeCreate2Post(QrCodeVo vo) {
 		return studyService.setQrCodeCreate2(vo);
 	}
 	
-	// QR Code 영화티켓예매 등록 폼보기
+	// QR Code 티켓예매 등록 폼보기
 	@RequestMapping(value = "/qrCode/qrCodeEx3", method = RequestMethod.GET)
 	public String qrCodeEx3Get() {
 		return "study/qrCode/qrCodeEx3";
 	}
 	
-	// QR Code 만들기(영화티켓예매 QR코드로 생성 및 티켓정보 DB에 저장하기)
+	// QR Code 만들기(티켓예매 QR코드로 생성 및 티켓정보 DB에 저장하기)
 	@ResponseBody
 	@RequestMapping(value = "/qrCode/qrCodeCreate3", method = RequestMethod.POST, produces="application/text; charset=utf-8")
 	public String qrCodeCreate3Post(QrCodeVo vo) {
@@ -694,6 +722,41 @@ public class StudyController {
 		return studyService.setQrCodeSearch(qrCode);
 	}
 	
+	// 암호화(password) 체크 폼 연습
+	@GetMapping("/password/passwordForm")
+	public String passwordFormGet() {
+		return "study/password/passwordForm";
+	}
+	
+	// 암호화(password) 체크 : sha256
+	@ResponseBody
+	@PostMapping(value="/password/sha256Check", produces="application/text; charset=utf-8")
+	public String sha256CheckPost(String pwd) {
+		String salt = UUID.randomUUID().toString().substring(0, 8);
+		SecurityUtil securityUtil = new SecurityUtil();
+		//String encPwd = securityUtil.encryptSHA256(pwd);
+		String encPwd = securityUtil.encryptSHA256(salt + pwd);
+		return encPwd;
+	}
+	
+	// 암호화(password) 체크 : bCryptPassword
+	@ResponseBody
+	@PostMapping(value="/password/bCryptPasswordCheck", produces="application/text; charset=utf-8")
+	public String bCryptPasswordCheckPost(String pwd) {
+		return passwordEncoder.encode(pwd);
+	}
+	
+	// 암호화(password) 체크 : ARIA 암호화방식
+	@ResponseBody
+	@PostMapping(value="/password/ariaCheck", produces="application/text; charset=utf-8")
+	public String ariaCheckPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
+		String salt = UUID.randomUUID().toString().substring(0, 8);
+		String encPwd = ARIAUtil.ariaEncrypt(salt + pwd);
+		String decPwd = ARIAUtil.ariaDecrypt(encPwd);
+		return "암호화:" + encPwd + ",복호화:" + decPwd.substring(decPwd.indexOf(":")+9);
+	}
+	
+	
 	// BackEnd 체크(Validator 처리) 폼 보기
 	@RequestMapping(value = "/validator/validatorForm", method = RequestMethod.GET)
 	public String validatorFormGet(Model model) {
@@ -703,25 +766,36 @@ public class StudyController {
 		return "study/validator/validatorForm";
 	}
 	
+	// User테이블에 user아이디 중복체크
+	@ResponseBody
+	@RequestMapping(value = "/validator/userIdCheck", method = RequestMethod.POST, produces="application/text; charset=utf-8")
+	public String validatorPost(String mid) {
+		UserVo vo = userService.getUserIdSearch(mid);
+		System.out.println("vo : " + vo);
+		if(vo == null) return "사용 가능한 아이디 입니다.";
+		return  "이미 사용중인 아이디 입니다.";
+	}
+	
 	// BackEnd 체크(Validator 처리)
+	@SuppressWarnings("deprecation")
 	@RequestMapping(value = "/validator/validatorForm", method = RequestMethod.POST)
 	public String validatorFormPost(@Validated TransactionVo vo, BindingResult bindingResult) {
 //		if(vo.getMid().length() < 2 || vo.getMid().length() > 20) {
-//			System.out.println("vo : " + vo);
+//			System.out.println("오류 : vo : " + vo);
 //		}
 		if(bindingResult.hasFieldErrors()) {
 			System.out.println("error발생");
 		  System.out.println("에러 내역 : " + bindingResult);
-		   List<ObjectError> listError = bindingResult.getAllErrors();
-		   String[] temp = null;
-		   for(ObjectError list : listError) {
-		  	 temp = list.getDefaultMessage().split("/");
-		  	 System.out.println("메세지 : " + temp[0] + " : "+ temp[1]);
-		  	 break;
-		   }
-		   return "redirect:/message/backEndCheckNo?tempFlag="+temp[1];
+		  List<ObjectError> listError = bindingResult.getAllErrors();
+		  String[] temp = null;
+		  for(ObjectError list : listError) {
+		    temp = list.getDefaultMessage().split("/");
+		    System.out.println("메세지 : " + temp[0] + " : "+ temp[1]);
+		    break;
+		  }
+		  //return "redirect:/message/backEndCheckNo?tempFlag="+temp[1];
+		  return "redirect:/message/backEndCheckNo?tempFlag="+java.net.URLEncoder.encode(temp[0]);
 		}
-		
 		
 		int res = studyService.setTransactionUserInput(vo);
 		
@@ -729,10 +803,77 @@ public class StudyController {
 		return "redirect:/message/transactionUserInputNo";
 	}
 	
+	// Transaction(트랜잭션) 연습 폼 보기
+	@RequestMapping(value = "/transaction/transactionForm", method = RequestMethod.GET)
+	public String transactionFormGet(Model model) {
+		List<UserVo> vos = userService.getUserList();
+		model.addAttribute("vos", vos);
+		
+		List<UserVo> vos2 = userService.getUser2List();
+		model.addAttribute("vos2", vos2);
+		
+		return "study/transaction/transactionForm";
+	}
 	
+	// Transaction(트랜잭션) 연습 user/user2 테이블에 등록내역 저장처리
+	@Transactional
+	@RequestMapping(value = "/transaction/transactionForm", method = RequestMethod.POST)
+	public String transactionFormPost(UserVo vo) {
+		int res = 0;
+		res = studyService.setTransactionUser1Input(vo);	// user테이블 등록
+		res = studyService.setTransactionUser2Input(vo);	// user2테이블 등록
+		
+		
+		if(res != 0) return "redirect:/message/transactionUserInputOk";
+		else return "redirect:/message/transactionUserInputNo";
+	}
 	
+	// Transaction(트랜잭션) 연습 user/user2 테이블에 등록내역 저장처리
+	@SuppressWarnings("deprecation")
+	@Transactional
+	@RequestMapping(value = "/transaction/transactionUser3Input", method = RequestMethod.POST)
+	public String transactionUser3InputPost(@Validated TransactionVo vo, BindingResult bindingResult) {
+		if(bindingResult.hasFieldErrors()) {
+			System.out.println("error발생");
+		  System.out.println("에러 내역 : " + bindingResult);
+		  List<ObjectError> listError = bindingResult.getAllErrors();
+		  String[] temp = null;
+		  for(ObjectError list : listError) {
+		    temp = list.getDefaultMessage().split("/");
+		    System.out.println("메세지 : " + temp[0] + " : "+ temp[1]);
+		    break;
+		  }
+		  return "redirect:/message/transacTionbackEndCheckNo?tempFlag="+java.net.URLEncoder.encode(temp[0]);
+		}
+		
+		int res = 0;
+		res = studyService.setTransactionUser3Input(vo);	// 'user/user2'테이블 등록
+		
+		if(res != 0) return "redirect:/message/transactionUserInputOk";
+		else return "redirect:/message/transactionUserInputNo";
+	}
 	
+	// 결제처리 연습하기 폼 보기
+	@RequestMapping(value = "/payment/paymentForm", method = RequestMethod.GET)
+	public String paymentGet(String mid) {
+		return  "study/payment/paymentForm";
+	}
 	
+	// 결제처리 연습하기 처리
+	@RequestMapping(value = "/payment/paymentForm", method = RequestMethod.POST)
+	public String paymentFormPost(Model model, HttpSession session, DbPayMentVo vo) {
+		session.setAttribute("sPayMentVo", vo);
+		model.addAttribute("vo", vo);
+		return  "study/payment/payment";
+	}
 	
+	// 결제처리 연습(결제 처리완료 후 수행하는 부분)
+	@RequestMapping(value = "/payment/paymentOk", method = RequestMethod.GET)
+	public String paymentOkGet(Model model, HttpSession session) {
+		DbPayMentVo vo = (DbPayMentVo) session.getAttribute("sPayMentVo");
+		model.addAttribute("vo", vo);
+		session.removeAttribute("sPayMentVo");
+		return  "study/payment/paymentOk";
+	}
 	
 }

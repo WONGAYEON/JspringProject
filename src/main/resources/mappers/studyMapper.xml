@@ -6,18 +6,37 @@
 	  <if test="i == 1">
 	    select substring(visitDate, 1, 10) as visitDate, visitCount from visit order by visitDate desc limit 7;
 	  </if>
+	  <if test="i == 2">
+	    select mid as visitDate, visitCnt as visitCount from member order by visitCnt desc limit 7;
+	  </if>
 	</select>
 	
 	<select id="setQrCodeSearch" resultType="com.spring.JspringProject.vo.QrCodeVo">
-			select * from qrCode where qrCodeName = #{qrCode};
+		select * from qrCode where qrCodeName = #{qrCode};
 	</select>
 	
+	
+	
 	<insert id="setQrCodeCreate">
-			insert into qrCode values (default,#{vo.mid},#{vo.name},#{vo.email},#{vo.movieName},#{vo.movieDate},#{vo.movieTime},#{vo.movieAdult},#{vo.movieChild},#{vo.publishDate},#{vo.qrCodeName});
+	  insert into qrCode values (default,#{vo.mid},#{vo.name},#{vo.email},#{vo.movieName},#{vo.movieDate},#{vo.movieTime},#{vo.movieAdult},#{vo.movieChild},#{vo.publishDate},#{vo.qrCodeName});
 	</insert>
 	
 	<insert id="setTransactionUserInput">
-			insert into user (mid, name, age, address, pwd) values (#{vo.mid},#{vo.name},#{vo.age},#{vo.address},'1234');
+	  insert into user (mid,name,age,address,pwd) values (#{vo.mid},#{vo.name},#{vo.age},#{vo.address},'1234');
 	</insert>
+	
+	<insert id="setTransactionUser1Input">
+	  insert into user (mid,name,age,address,pwd) values (#{vo.mid},#{vo.name},#{vo.age},#{vo.address},'1234');
+	</insert>
+	
+	<insert id="setTransactionUser2Input">
+	  insert into user2 values (default, #{vo.mid},#{vo.job});
+	</insert>
+  
+	<insert id="setTransactionUser3Input">
+	  insert into user (mid,name,age,address,pwd) values (#{vo.mid},#{vo.name},#{vo.age},#{vo.address},'1234');
+	  insert into user2 values (default, #{vo.mid},#{vo.job});
+	</insert>
+	
   
 </mapper>
